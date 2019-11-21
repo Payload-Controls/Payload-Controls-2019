@@ -21,7 +21,6 @@ void setup() {
   digitalWrite(13, HIGH);
   Serial.begin(115200);
   Serial.print("Initializing SD card...");  // see if the card is present and can be initialized:
-  Serial1.begin(57600);
   if (!SD.begin(CHIP_SELECT)) {
     Serial.println("Card failed, or not present");
     while (1 && WRITE);
@@ -31,15 +30,6 @@ void setup() {
 }
 
 void loop() {
-  if (Serial1.available()) {
-    int inChar = Serial1.read();
-    if (inChar != '\n') {
-      inputData += (char)inChar;
-    }else{
-      Serial.print(inputData);
-      inputData = "";
-    }
-  }
   readSensors();
   //printADCs();
   String dataString = formatData();
