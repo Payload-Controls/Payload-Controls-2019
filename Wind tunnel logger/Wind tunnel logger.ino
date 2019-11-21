@@ -19,9 +19,6 @@ Adafruit_ADS1115 adc1(0x4B);
 void setup() {
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
-#ifndef ESP8266
-  while (!Serial);     // For running on ESP boards. Will pause until serial console opens
-#endif
   Serial.begin(115200);
   Serial.print("Initializing SD card...");  // see if the card is present and can be initialized:
   Serial1.begin(57600);
