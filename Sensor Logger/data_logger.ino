@@ -46,7 +46,7 @@ void setup() {
     Serial.println("Card failed, or not present");
     while (1 && WRITE);
   }
-  writeToFile("Time (ms),HF Sensor 1,HF Sensor 2,Rogowski coil,Pressure 1 (hPa),Pressure 2 (hPa),Temp (C)");
+  writeToFile("Time (ms),Upper HF Sensor,Lower HF Sensor,Rogowski coil,Upper Pressure (hPa),Lower Pressure (hPa),Temp (C)");
   Serial.println("card initialized.");
   initSensors();
 }
