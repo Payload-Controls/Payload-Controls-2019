@@ -82,11 +82,12 @@ void initSensors() {
 
   adcRogowski.begin();
   adcRogowski.setGain(GAIN_SIXTEEN);
-  Serial.println("Sensors Initialized");
 
   mpr.begin();
 
   bme.begin();
+  
+  Serial.println("Sensors Initialized");
 }
 
 void readSensors() {
