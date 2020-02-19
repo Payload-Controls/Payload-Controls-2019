@@ -116,7 +116,7 @@ void readSensors() {
   tcaselect(0);
   PRESSURE1 = mpr1.readPressure();
   tcaselect(1);
-  PRESSURE1 = mpr1.readPressure();
+  PRESSURE2 = mpr2.readPressure();
 
   // Read temp
   TEMP = bme.readTemperature();
