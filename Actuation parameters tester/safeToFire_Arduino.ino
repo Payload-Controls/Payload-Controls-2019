@@ -8,7 +8,7 @@
 #define SEALEVELPRESSURE_HPA (1013.25)
 
 // Create LSM9DS0 board instance.
-Adafruit_LSM9DS0     lsm(1000);  // Use I2C, ID #1000
+Adafruit_LSM9DS0 lsm(1000);  // Use I2C, ID #1000
 Adafruit_BME280 bme;
 
 // Headers of modules
@@ -80,8 +80,8 @@ float heightAvgOld = 0.0;
 int count = 0;
 int safe = 0;
 
-signed long timeLaunched = -1;
-signed long timeSinceLaunch = -1;
+unsigned long timeLaunched = 0;
+unsigned long timeSinceLaunch = 0;
 
 int launchedInput = 0; // get input from someone
 
@@ -97,12 +97,12 @@ void loop() {
   float yawIn = orientation.roll;
   float pitchIn = orientation.pitch; //inputPitch;
 
-  unsigned long long currTime = millis();
+  unsigned long currTime = millis();
   if (currTime > 3000) {
     launchedInput = 1;
   }
   if (launchedInput) {
-    if (timeLaunched < 0) {
+    if (timeLaunched == 0) {
       timeLaunched = currTime;
     }
     timeSinceLaunch = currTime - timeLaunched;
@@ -138,7 +138,7 @@ void loop() {
 }
 
 // takes 20 data points, takes the average of them, and then asks if based on the average it is safe to fire the plasma
-int safeToFire(float height[20], float yaw[20], float pitch[20], int timeSinceLaunch) {
+int safeToFire(float height[20], float yaw[20], float pitch[20], unsigned long timeSinceLaunch) {
   int isSafe = 0;
 
   float heightAvg = getAverage(height);
@@ -148,17 +148,21 @@ int safeToFire(float height[20], float yaw[20], float pitch[20], int timeSinceLa
   float heightStD = getStD(height, heightAvg);
   float yawStD = getStD(yaw, yawAvg);
   float pitchStD = getStD(pitch, pitchAvg);
-  if (timeSinceLaunch > 8500) {   // 10000 ms = 10 seconds     // adjust when we look at actual data to reflect a data point that seems unreasonable
-    if (heightStD < 150 && yawStd < 20 && pitchStD < 20 &&
-        heightAvg > 15 && (heightAvg > heightAvgOld -.5) &&
+  if (timeSinceLaunch > 8500) {   // 8500 ms = 8.5 seconds     
+   if(
+    //if (heightStD < 150 && yawStD < 20 && pitchStD < 20 &&          // adjust when we look at actual data to reflect a data point that seems unreasonable
+        heightAvg > -56 && (heightAvg > (heightAvgOld + .02)) &&          // need to change on day of depending on pressure that day
         yawAvg > -45 && yawAvg < 45 && pitchAvg > -45 && pitchAvg < 45) {
       isSafe = 1;
     }
   }
 
-  Serial.print(heightStD); ; Serial.print("   "); Serial.print(yawStD); Serial.print("   "); Serial.print(pitchStD); Serial.print("   ");
-  Serial.print(heightAvg); Serial.print("   "); Serial.print(heightAvgOld); Serial.print("   "); Serial.print(yawAvg); Serial.print("   ");
-  Serial.print(pitchAvg); Serial.print("   ");  Serial.print(isSafe); Serial.println("   ");
+  Serial.println(timeSinceLaunch);
+  Serial.print("Height StD: "); Serial.print(heightStD); ; Serial.print("   ");
+  Serial.print("Height Avg: "); Serial.print(heightAvg); Serial.print("  Height Avg Old: "); Serial.print(heightAvgOld); Serial.print("   ");
+  Serial.print("Yaw StD: "); Serial.print(yawStD); Serial.print(" Pitch StD: "); Serial.print(pitchStD); Serial.print("   ");
+  Serial.print("Yaw Avg: "); Serial.print(yawAvg); Serial.print(" Pitch Avg: ");  Serial.print(pitchAvg); Serial.print("   ");
+  Serial.print("IsSafe: "); Serial.print(isSafe); Serial.println("   ");
 
   heightAvgOld = heightAvg;
 
